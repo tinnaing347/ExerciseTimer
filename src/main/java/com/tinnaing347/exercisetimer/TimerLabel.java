@@ -28,16 +28,31 @@ public class TimerLabel {
 		String text = textTimer.getText();
 		
 		try {
-			timerVal = Integer.parseInt(text);
+			timerVal = parseTextTimer(text);
 			totalTime += timerVal;
 			waitTime = totalTime - timerVal;
 			labelTimer.setText(Integer.toString(timerVal));
-		} catch (NumberFormatException e) { //catch error here for now; todo add InputVerifier
+		} catch (IllegalArgumentException e) { //catch error here for now; todo add InputVerifier
 			String message = text + " is invalid value for timer: " + id + ".\nPlease try again with a number";
 	        JOptionPane.showMessageDialog(null,
 	                                      message,
 	                                      "Invalid Value",
 	                                      JOptionPane.WARNING_MESSAGE);
+		}
+	}
+	
+	private int parseTextTimer(String text) {
+		try {
+			timerVal = Integer.parseInt(text);
+		} catch (NumberFormatException e) {
+			throw e;
+		}
+		
+		//take care of negative value for now;
+		if (timerVal < 0) {
+			throw new IllegalArgumentException();
+		} else {
+			return timerVal;
 		}
 	}
 	
