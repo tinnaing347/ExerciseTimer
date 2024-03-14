@@ -1,8 +1,14 @@
 package com.tinnaing347.exercisetimer;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 public class TimerLabel {
 	JLabel labelTimer;
@@ -56,12 +62,12 @@ public class TimerLabel {
 		}
 	}
 	
-	JLabel getlabelTimer() {
+	private JLabel getlabelTimer() {
 		return labelTimer;
 	}
 	
 	
-	int getimerVal() {
+	private int getimerVal() {
 		return timerVal;
 	}
 	
@@ -69,13 +75,48 @@ public class TimerLabel {
 		return totalTime;
 	}
 	
-	int getwaitTime() {
+	private int getwaitTime() {
 		return waitTime;
 	}
 	
 	//need this to reset total time in the case that set is pressed more than once
 	static void resetTotalTime() {
 		totalTime = 0;
+	}
+	
+	static void resetCounter() {
 		counter = 0;
 	}
+
+	Timer createTimer() {
+		final Timer timer = new Timer(1000, null);
+		final JLabel l = getlabelTimer();
+		final int timerVal = getimerVal();
+		final int waitTime = getwaitTime();
+		ActionListener taskPerformer = new ActionListener() {
+			int j = waitTime;
+			int i = timerVal;
+		      public void actionPerformed(ActionEvent evt) {
+		    	if (j == 0 & i >=0) {
+		    		l.setText(Integer.toString(i--));
+		    		l.setForeground(Color.red);
+		    	}
+		    	if (i < 0) {
+		    		l.setForeground(Color.black);
+		    		timer.stop();
+		    	}
+		    	if (j > 0) j--;
+		      }
+		  };
+		 timer.addActionListener(taskPerformer);
+		 return timer;
+	}
+	
+	void remove(JFrame frame) {
+		frame.remove(labelTimer);
+		frame.remove(textTimer);
+		frame.remove(textLabel);
+	}
+	
+	
 }

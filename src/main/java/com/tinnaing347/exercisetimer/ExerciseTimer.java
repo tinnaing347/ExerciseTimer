@@ -72,6 +72,7 @@ public class ExerciseTimer {
 	                	TimerLabel myTempLabel = new TimerLabel(templabelTimer, temptextTimer, temptextLabel);
 	                	labels.add(myTempLabel);
 	                	
+	                	
 	                    frame.getContentPane().add(temptextLabel);
 	                    frame.getContentPane().add(temptextTimer);
 	                    frame.getContentPane().add(templabelTimer);
@@ -89,13 +90,23 @@ public class ExerciseTimer {
 		
 		JButton setButton = new JButton("Set");
 		panel_1.add(setButton);
+		
+		JButton clearButton = new JButton("Clear");
+		clearButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for (TimerLabel myL : labels) myL.remove(frame);
+                TimerLabel.resetCounter();
+                labels.clear();
+                frame.validate();
+                frame.repaint();
+			}
+		});
+		panel_1.add(clearButton);
 		setButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//need this to reset total time in the case that set is pressed more than once
 				TimerLabel.resetTotalTime();
-				for (TimerLabel l: labels) {
-					l.setLabelTimer();
-				}
+				for (TimerLabel l: labels) l.setLabelTimer();
 			}
 		});
 		
@@ -107,33 +118,8 @@ public class ExerciseTimer {
 		startButton.addActionListener(new ActionListener() {
 			ArrayList<Timer> timerLs =new ArrayList<>();
 			public void actionPerformed(ActionEvent e) {
-				for (TimerLabel myL : labels) {
-					final Timer timer = new Timer(1000, null);
-					final JLabel l = myL.getlabelTimer();
-					final int timerVal = myL.getimerVal();
-					final int waitTime =  myL.getwaitTime();
-					ActionListener taskPerformer = new ActionListener() {
-						int j = waitTime;
-						int i = timerVal;
-					      public void actionPerformed(ActionEvent evt) {
-					    	if (j == 0 & i >=0) {
-					    		l.setText(Integer.toString(i--));
-					    		l.setForeground(Color.red);
-					    	}
-					    	if (i < 0) {
-					    		l.setForeground(Color.black);
-					    		timer.stop();
-					    	}
-					    	if (j > 0) j--;
-					      }
-					  };
-					 timer.addActionListener(taskPerformer);
-					 timerLs.add(timer);
-				};
-				
-				for (Timer t : timerLs) {
-					t.start();
-				};
+				for (TimerLabel myL : labels) {timerLs.add(myL.createTimer());}
+				for (Timer t : timerLs) {t.start();}
 				timerLs.clear();
 			}
 		}); //startButton action listener ends
